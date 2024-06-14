@@ -12,7 +12,7 @@ class User extends Controller
         $model = new UserModel(); // Inisialisasi model
         $data['users'] = $model->findAll(); // Mengambil semua data pengguna
 
-        return view('user_list', $data); // Mengirim data ke view
+        return view('user_list', $data); // Menampilkan halaman daftar pengguna
     }
 
     public function create()
@@ -24,14 +24,20 @@ class User extends Controller
     {
         $model = new UserModel();
 
+        // Ambil data dari form
         $data = [
             'name' => $this->request->getPost('name'),
             'email' => $this->request->getPost('email'),
         ];
 
-        $model->save($data); // Menyimpan data pengguna
-
-        return redirect()->to('/user'); // Redirect ke halaman daftar pengguna
+        // Simpan data pengguna
+        if ($model->save($data)) {
+            // Jika berhasil disimpan, kirim respons JSON success
+            return $this->response->setJSON(['success' => true]);
+        } else {
+            // Jika gagal disimpan, kirim respons JSON error
+            return $this->response->setJSON(['success' => false]);
+        }
     }
 
     public function edit($id)
@@ -46,12 +52,14 @@ class User extends Controller
     {
         $model = new UserModel();
 
+        // Ambil data dari form
         $data = [
             'name' => $this->request->getPost('name'),
             'email' => $this->request->getPost('email'),
         ];
 
-        $model->update($id, $data); // Mengupdate data pengguna
+        // Update data pengguna
+        $model->update($id, $data);
 
         return redirect()->to('/user'); // Redirect ke halaman daftar pengguna
     }
